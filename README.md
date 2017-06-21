@@ -4,8 +4,11 @@ The images in this repository contain the suggested base worker node environment
 
 Available tags include:
 
-* `latest`: The latest version of the OSG worker node environment on the most recent supported OS.  As of February 2017, this is OSG 3.3 and RHEL7.
-* `3.3`: The OSG 3.3 release series on top of the most recent supported OS.  As of February 2017, this is RHEL7.
+* `latest`: The latest version of the OSG worker node environment on the most recent supported OS.  As of June 2017, this is OSG 3.4 and RHEL7.
+* `3.4`: The OSG 3.4 release series on top of the most recent supported OS.  As of June 2017, this is RHEL7.
+* `3.4-el7`: The OSG 3.4 release series on top of a RHEL7 environment.
+* `3.4-el6`: The OSG 3.4 release series on top of a RHEL6 environment.
+* `3.3`: The OSG 3.3 release series on top of the most recent supported OS.  As of June 2017, this is RHEL7.
 * `3.3-el7`: The OSG 3.3 release series on top of a RHEL7 environment.
 * `3.3-el6`: The OSG 3.3 release series on top of a RHEL6 environment.
 
@@ -27,6 +30,6 @@ are oriented toward developers trying to adjust their software to the updated en
 Available tags include:
 * `testing`: The testing repository on the most recent OS.
 * `devel`: The development repository (least refined but most recent updates of software) on the most recent OS.
-* `3.3-testing-el6`: The testing repository on top of a RHEL6 environment.
+* `3.4-testing-el6`: The testing repository on top of a RHEL6 environment.
 
-There are similar tags for `3.3-{testing,devel}-{el6,el7}`.
+There are similar tags for `{3.3,3.4}-{testing,devel}-{el6,el7}`.
