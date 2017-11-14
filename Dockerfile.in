@@ -10,8 +10,6 @@ RUN yum -y install https://repo.grid.iu.edu/osg/3.4/osg-3.4-el6-release-latest.r
     yum -y install  \
                    osg-wn-client \
                    osg-wn-client-glexec \
-                   redhat-lsb-core
-
-# Install Singularity
-RUN yum -y install --enablerepo=osg-upcoming-development singularity && \
-    yum clean all
+                   redhat-lsb-core \
+                   singularity && \
+    rm -rf /var/cache/yum/*
