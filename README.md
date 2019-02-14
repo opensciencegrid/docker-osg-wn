@@ -29,4 +29,4 @@ Available tags include:
 * `devel`: The development repository (least refined but most recent updates of software) on the most recent OS.
 * `3.4-testing-el6`: The testing repository on top of a RHEL6 environment.
 
-There are similar tags for `{3.3,3.4}-{testing,devel}-{el6,el7}`.
+There are similar tags for `3.4-{testing,devel}-{el6,el7}`.
