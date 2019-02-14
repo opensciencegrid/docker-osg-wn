@@ -8,9 +8,6 @@ Available tags include:
 * `3.4`: The OSG 3.4 release series on top of the most recent supported OS.  As of June 2017, this is RHEL7.
 * `3.4-el7`: The OSG 3.4 release series on top of a RHEL7 environment.
 * `3.4-el6`: The OSG 3.4 release series on top of a RHEL6 environment.
-* `3.3`: The OSG 3.3 release series on top of the most recent supported OS.  As of June 2017, this is RHEL7.
-* `3.3-el7`: The OSG 3.3 release series on top of a RHEL7 environment.
-* `3.3-el6`: The OSG 3.3 release series on top of a RHEL6 environment.
 
 As new release series (OSG 3.4, 3.5, ...) and base OS (RHEL8, RHEL9, ...) occur, the above tags will be updated appropriately.
 Each release series gets updates from the OSG on the second Tuesday of each month; additional image updates will occur whenever
