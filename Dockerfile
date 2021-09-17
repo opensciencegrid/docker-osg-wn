@@ -7,7 +7,7 @@ ARG OSG_RELEASE=3.6
 ARG BASE_YUM_REPO=release
 ARG BUILDDATE
 
-LABEL name="OSG ${OSG_RELEASE} Worker Node Client on EL ${EL_VER} + ${REPO} repos"
+LABEL name="OSG ${OSG_RELEASE} Worker Node Client on EL ${EL_VER} + ${BASE_YUM_REPO} repos"
 LABEL build-date=${BUILDDATE}
 
 RUN yum -y install https://repo.opensciencegrid.org/osg/${OSG_RELEASE}/osg-${OSG_RELEASE}-el${EL_VER}-release-latest.rpm \
@@ -19,8 +19,10 @@ RUN yum -y install https://repo.opensciencegrid.org/osg/${OSG_RELEASE}/osg-${OSG
     if [[ ${EL_VER} == 8 ]]; then \
         yum-config-manager --enable powertools; \
     fi && \
-    if [[ ${REPO} != "release" ]]; then \
-        yum-config-manager --enable osg-${REPO}; \
+    if [[ ${BASE_YUM_REPO} == "devel" ]]; then \
+        yum-config-manager --enable osg-development; \
+    elif [[ ${BASE_YUM_REPO} != "release" ]]; then \
+        yum-config-manager --enable osg-${BASE_YUM_REPO}; \
     fi && \
     yum -y install   \
                    osg-wn-client \
