@@ -4,7 +4,7 @@ FROM centos:centos${EL_VER}
 
 ARG EL_VER=8
 ARG OSG_RELEASE=3.6
-ARG REPO=release
+ARG BASE_YUM_REPO=release
 ARG BUILDDATE
 
 LABEL name="OSG ${OSG_RELEASE} Worker Node Client on EL ${EL_VER} + ${REPO} repos"
