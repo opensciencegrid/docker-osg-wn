@@ -41,11 +41,11 @@ jobs:
         docker_repo=ryantoh2110/osg-wn
         tags=()
         for registry in hub.opensciencegrid.org docker.io; do
-          tags+=( $registry/$docker_repo:$OSG_RELEASE-$REPO-el$EL_VER )
+          tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
           tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
           tags+=( $registry/$docker_repo:$OSG_RELEASE )
           tags+=( $registry/$docker_repo:$EL_VER )
-          tags+=( $registry/$docker_repo:$REPO )
+          tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
         done
         tag_list=$(IFS=,; echo "${tags[*]}")
         echo "::set-output name=taglist::$tag_list"
