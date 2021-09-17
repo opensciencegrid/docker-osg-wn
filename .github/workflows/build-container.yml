@@ -25,7 +25,7 @@ jobs:
       fail-fast: False
       matrix:
         dver: ['7', '8']
-        repo: ['development', 'testing', 'release']
+        repo: ['devel', 'testing', 'release']
         series: ['3.5', '3.6']
     steps:
     - uses: actions/checkout@v2
@@ -39,7 +39,15 @@ jobs:
         TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
       run: |
         docker_repo=ryantoh2110/osg-wn
-        tag_list=$docker_repo:$REPO,$docker_repo:$REPO-$TIMESTAMP
+        tags=()
+        for registry in hub.opensciencegrid.org docker.io; do
+          tags+=( $registry/$docker_repo:$OSG_RELEASE-$REPO-el$EL_VER )
+          tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
+          tags+=( $registry/$docker_repo:$OSG_RELEASE )
+          tags+=( $registry/$docker_repo:$EL_VER )
+          tags+=( $registry/$docker_repo:$REPO )
+        done
+        tag_list=$(IFS=,; echo "${tags[*]}")
         echo "::set-output name=taglist::$tag_list"
     
     - name: Set up Docker Buildx
