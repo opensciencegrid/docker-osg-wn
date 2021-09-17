@@ -40,13 +40,14 @@ jobs:
       run: |
         docker_repo=ryantoh2110/osg-wn
         tags=()
-        for registry in hub.opensciencegrid.org docker.io; do
-          tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
-          tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
-          tags+=( $registry/$docker_repo:$OSG_RELEASE )
-          tags+=( $registry/$docker_repo:$EL_VER )
-          tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
-        done
+        tags+=( $docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
+        tags+=( $docker_repo:$OSG_RELEASE-el$EL_VER )
+        tags+=( $docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
+        tags+=( $docker_repo:$OSG_RELEASE )
+        tags+=( $docker_repo:$BASE_YUM_REPO )
+        if [[ $BASE_YUM_REPO == "release" ]]; then 
+          tags+=( $docker_repo:latest )
+        fi
         tag_list=$(IFS=,; echo "${tags[*]}")
         echo "::set-output name=taglist::$tag_list"
     
