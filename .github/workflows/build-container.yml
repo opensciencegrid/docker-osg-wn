@@ -43,23 +43,15 @@ jobs:
         for registry in hub.opensciencegrid.org docker.io; do
           tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
           if [[ $EL_VER == '8' ]]; then
-            tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
             tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
             if [[ $BASE_YUM_REPO == 'release' ]]; then
               tags+=( $registry/$docker_repo:$OSG_RELEASE )
-              if [[ $OSG_RELEASE == '3.6' ]]; then
-                tags+=( $registry/$docker_repo:latest )
-                tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
-              fi
+              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:latest )
             else
-              if [[ $OSG_RELEASE == '3.6' ]]; then
-                tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
-              fi
+              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
             fi
-          else
-            if [[$BASE_YUM_REPO == 'release' ]]; then
-              tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
-            fi
+          elif [[$BASE_YUM_REPO == 'release' ]]; then
+            tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
           fi
         done
         tag_list=$(IFS=,; echo "${tags[*]}")
