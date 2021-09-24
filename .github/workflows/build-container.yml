@@ -1,0 +1,85 @@
+name: Build and Push Docker image
+
+on:
+  push:
+    branches: [ master ]
+  repository_dispatch:
+    types:
+      - dispatch-build
+  workflow_dispatch:
+
+jobs:
+  make-date-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      dtag: ${{ steps.mkdatetag.outputs.dtag }}
+    steps:
+    - name: make date tag
+      id: mkdatetag
+      run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [make-date-tag]
+    strategy:
+      fail-fast: False
+      matrix:
+        dver: ['7', '8']
+        repo: ['devel', 'testing', 'release']
+        series: ['3.5', '3.6']
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Generate tag list
+      id: generate-tag-list
+      env:
+        EL_VER: ${{ matrix.dver }}
+        BASE_YUM_REPO: ${{ matrix.repo }}
+        OSG_RELEASE: ${{ matrix.series }}
+        TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
+      run: |
+        docker_repo=${GITHUB_REPOSITORY/opensciencegrid\/docker-/opensciencegrid/}
+        tags=()
+        for registry in hub.opensciencegrid.org docker.io; do
+          tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
+          if [[ $EL_VER == '8' ]]; then
+            tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
+            if [[ $BASE_YUM_REPO == 'release' ]]; then
+              tags+=( $registry/$docker_repo:$OSG_RELEASE )
+              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:latest )
+            else
+              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
+            fi
+          if [[$BASE_YUM_REPO == 'release' ]]; then
+            tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
+          fi
+        done
+        tag_list=$(IFS=,; echo "${tags[*]}")
+        echo "::set-output name=taglist::$tag_list"
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Log in to OSG Harbor
+      uses: docker/login-action@v1
+      with:
+        registry: hub.opensciencegrid.org
+        username: ${{ secrets.OSG_HARBOR_ROBOT_USER }}
+        password: ${{ secrets.OSG_HARBOR_ROBOT_PASSWORD }}
+
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v2.2.0
+      with:
+        push: true
+        build-args: |
+          EL_VER=${{ matrix.dver }}
+          BASE_YUM_REPO=${{ matrix.repo }}
+          OSG_RELEASE=${{ matrix.series }}
+          BUILDDATE=${{ needs.make-date-tag.outputs.dtag }}
+        tags: "${{ steps.generate-tag-list.outputs.taglist }}"
