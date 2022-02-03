@@ -1,6 +1,7 @@
-ARG EL_VER=8
+# Default to EL8 builds
+ARG IMAGE_BASE=quay.io/centos/centos:stream8
 
-FROM centos:centos${EL_VER}
+FROM $IMAGE_BASE
 
 ARG EL_VER=8
 ARG OSG_RELEASE=3.6
