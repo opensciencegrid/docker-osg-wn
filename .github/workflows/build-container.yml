@@ -26,7 +26,7 @@ jobs:
       matrix:
         dver: ['7', '8']
         repo: ['devel', 'testing', 'release']
-        series: ['3.5', '3.6']
+        series: ['3.6']
     steps:
     - uses: actions/checkout@v2
 
