@@ -36,6 +36,7 @@ RUN yum -y install https://repo.opensciencegrid.org/osg/${OSG_RELEASE}/osg-${OSG
     yum -y install   \
                    osg-wn-client \
                    redhat-lsb-core \
+                   openssh-server \
                    singularity && \
     yum clean all && \
     rm -rf /var/cache/yum/*
