@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: False
       matrix:
-        dver: ['7', '8']
+        dver: ['el7', 'el8', 'al8']
         repo: ['devel', 'testing', 'release']
         series: ['3.6']
     steps:
@@ -33,7 +33,7 @@ jobs:
     - name: Generate tag list
       id: generate-tag-list
       env:
-        EL_VER: ${{ matrix.dver }}
+        OS_VER: ${{ matrix.dver }}
         BASE_YUM_REPO: ${{ matrix.repo }}
         OSG_RELEASE: ${{ matrix.series }}
         TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
@@ -41,8 +41,8 @@ jobs:
         docker_repo=${GITHUB_REPOSITORY/opensciencegrid\/docker-/opensciencegrid/}
         tags=()
         for registry in hub.opensciencegrid.org docker.io; do
-          tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
-          if [[ $EL_VER == '8' ]]; then
+          tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-$OS_VER )
+          if [[ $OS_VER == 'el8' ]]; then
             tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
             if [[ $BASE_YUM_REPO == 'release' ]]; then
               tags+=( $registry/$docker_repo:$OSG_RELEASE )
@@ -52,7 +52,7 @@ jobs:
             fi
           fi
           if [[ $BASE_YUM_REPO == 'release' ]]; then
-            tags+=( $registry/$docker_repo:$OSG_RELEASE-el$EL_VER )
+            tags+=( $registry/$docker_repo:$OSG_RELEASE-$OS_VER )
           fi
         done
         tag_list=$(IFS=,; echo "${tags[*]}")
@@ -63,9 +63,10 @@ jobs:
         DVER: ${{ matrix.dver }}
       run: |
         case "$DVER" in
-          9) image_base="quay.io/centos/centos:stream9";;
-          8) image_base="quay.io/centos/centos:stream8";;
-          7) image_base="docker.io/centos:centos7";;
+          el9) image_base="quay.io/centos/centos:stream9";;
+          el8) image_base="quay.io/centos/centos:stream8";;
+          el7) image_base="docker.io/centos:centos7";;
+          al8) image_base="quay.io/almalinux/almalinux:8";;
           *) echo "Unknown distro version: $DVER"; exit 1;;
         esac
         echo "::set-output name=imagebase::${image_base}"
@@ -91,7 +92,7 @@ jobs:
       with:
         push: true
         build-args: |
-          EL_VER=${{ matrix.dver }}
+          OS_VER=${{ matrix.dver }}
           IMAGE_BASE=${{ steps.generate-image-base.outputs.imagebase }}
           BASE_YUM_REPO=${{ matrix.repo }}
           OSG_RELEASE=${{ matrix.series }}
