@@ -9,18 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  make-date-tag:
-    runs-on: ubuntu-latest
-    outputs:
-      dtag: ${{ steps.mkdatetag.outputs.dtag }}
-    steps:
-    - name: make date tag
-      id: mkdatetag
-      run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
-
   build:
     runs-on: ubuntu-latest
-    needs: [make-date-tag]
     strategy:
       fail-fast: False
       matrix:
@@ -28,35 +18,20 @@ jobs:
         repo: ['devel', 'testing', 'release']
         series: ['3.6']
     steps:
-    - uses: actions/checkout@v2
+      - id: custom-image-name
+        env:
+          SERIES: ${{ matrix.series }}
+          REPO: ${{ matrix.repo }}
+          OS: ${{ matrix.dver }}
+        run: |
+          PREFIX="output_image=${GITHUB_REPOSITORY}:${SERIES}"
+          if [[ $OS == 'el8' ]]; then
+            echo "${PREFIX}-${REPO}" >> ${GITHUB_OUTPUT}
+          else
+            echo "${PREFIX}-${OS}-${REPO}" >> ${GITHUB_OUTPUT}
+          fi
 
-    - name: Generate tag list
-      id: generate-tag-list
-      env:
-        OS_VER: ${{ matrix.dver }}
-        BASE_YUM_REPO: ${{ matrix.repo }}
-        OSG_RELEASE: ${{ matrix.series }}
-        TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
-      run: |
-        docker_repo=${GITHUB_REPOSITORY/opensciencegrid\/docker-/opensciencegrid/}
-        tags=()
-        for registry in hub.opensciencegrid.org docker.io; do
-          tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-$OS_VER )
-          if [[ $OS_VER == 'el8' ]]; then
-            tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
-            if [[ $BASE_YUM_REPO == 'release' ]]; then
-              tags+=( $registry/$docker_repo:$OSG_RELEASE )
-              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:latest )
-            else
-              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
-            fi
-          fi
-          if [[ $BASE_YUM_REPO == 'release' ]]; then
-            tags+=( $registry/$docker_repo:$OSG_RELEASE-$OS_VER )
-          fi
-        done
-        tag_list=$(IFS=,; echo "${tags[*]}")
-        echo "::set-output name=taglist::$tag_list"
+ 
 
     - id: generate-image-base
       env:
