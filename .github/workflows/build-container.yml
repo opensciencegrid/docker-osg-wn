@@ -30,21 +30,13 @@ jobs:
           else
             echo "${PREFIX}-${OS}-${REPO}" >> ${GITHUB_OUTPUT}
           fi
-
- 
-
-    - id: generate-image-base
-      env:
-        DVER: ${{ matrix.dver }}
-      run: |
-        case "$DVER" in
-          el9) image_base="quay.io/centos/centos:stream9";;
-          el8) image_base="quay.io/centos/centos:stream8";;
-          el7) image_base="docker.io/centos:centos7";;
-          al8) image_base="quay.io/almalinux/almalinux:8";;
-          *) echo "Unknown distro version: $DVER"; exit 1;;
-        esac
-        echo "::set-output name=imagebase::${image_base}"
+      - id: build-image
+        uses: opensciencegrid/build-container-action@v0.5.0
+        with: 
+          osg_series: ${{ matrix.series }}
+          osg_repo: ${{ matrix.repo }}
+          base_os: ${{ matrix.dver }}
+          output_image: ${{ steps.custom-image-name.outputs.output_image }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
