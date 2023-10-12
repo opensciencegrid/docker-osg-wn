@@ -3,39 +3,36 @@ ARG IMAGE_BASE=quay.io/centos/centos:stream8
 
 FROM $IMAGE_BASE
 
-ARG EL_VER=8
-ARG OSG_RELEASE=3.6
+ARG EL_VER=9
+ARG OSG_RELEASE=23
 ARG BASE_YUM_REPO=release
 ARG BUILDDATE
 
 LABEL name="OSG ${OSG_RELEASE} Worker Node Client on EL ${EL_VER} + ${BASE_YUM_REPO} repos"
 LABEL build-date=${BUILDDATE}
 
-RUN yum -y install https://repo.opensciencegrid.org/osg/${OSG_RELEASE}/osg-${OSG_RELEASE}-el${EL_VER}-release-latest.rpm \
+RUN if [[ ${OSG_RELEASE} == "23" ]]; then \
+        REL_URL_SNIPPET=23-main; \
+    else \
+        REL_URL_SNIPPET=${OSG_RELEASE}; \
+    fi && \
+    yum -y install https://repo.opensciencegrid.org/osg/${REL_URL_SNIPPET}/osg-${REL_URL_SNIPPET}-el${EL_VER}-release-latest.rpm \
                    epel-release \
                    yum-utils && \
     if [[ ${EL_VER} == 7 ]]; then \
         yum -y install yum-plugin-priorities; \
-    fi && \
-    if [[ ${EL_VER} == 8 ]]; then \
+    elif [[ ${EL_VER} == 8 ]]; then \
         yum-config-manager --enable powertools; \
+    elif [[ ${EL_VER} == 9 ]]; then \
+        yum-config-manager --enable crb; \
     fi && \
     if [[ ${BASE_YUM_REPO} == "devel" ]]; then \
         yum-config-manager --enable osg-development; \
-        if [[ ${OSG_RELEASE} == "3.5" ]]; then \
-            yum-config-manager --enable osg-upcoming-development; \
-        fi; \
     elif [[ ${BASE_YUM_REPO} != "release" ]]; then \
         yum-config-manager --enable osg-${BASE_YUM_REPO}; \
-        if [[ ${OSG_RELEASE} == "3.5" ]]; then \
-            yum-config-manager --enable osg-upcoming-${BASE_YUM_REPO}; \
-        fi; \
-    elif [[ ${OSG_RELEASE} == "3.5" ]]; then \
-        yum-config-manager --enable osg-upcoming; \
     fi && \
     yum -y install   \
                    osg-wn-client \
-                   redhat-lsb-core \
                    openssh-server \
                    apptainer && \
     yum clean all && \
