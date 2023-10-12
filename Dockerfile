@@ -33,7 +33,6 @@ RUN if [[ ${OSG_RELEASE} == "23" ]]; then \
     fi && \
     yum -y install   \
                    osg-wn-client \
-                   redhat-lsb-core \
                    openssh-server \
                    apptainer && \
     yum clean all && \
