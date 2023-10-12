@@ -21,9 +21,10 @@ RUN if [[ ${OSG_RELEASE} == "23" ]]; then \
                    yum-utils && \
     if [[ ${EL_VER} == 7 ]]; then \
         yum -y install yum-plugin-priorities; \
-    fi && \
-    if [[ ${EL_VER} == 8 ]]; then \
+    elif [[ ${EL_VER} == 8 ]]; then \
         yum-config-manager --enable powertools; \
+    elif [[ ${EL_VER} == 9 ]]; then \
+        yum-config-manager --enable crb; \
     fi && \
     if [[ ${BASE_YUM_REPO} == "devel" ]]; then \
         yum-config-manager --enable osg-development; \
