@@ -67,7 +67,7 @@ jobs:
       run: |
         case "$DVER" in
           9) image_base="quay.io/centos/centos:stream9";;
-          8) image_base="quay.io/centos/centos:stream8";;
+          8) image_base="docker.io/library/almalinux:8";;
           7) image_base="docker.io/centos:centos7";;
           *) echo "Unknown distro version: $DVER"; exit 1;;
         esac
