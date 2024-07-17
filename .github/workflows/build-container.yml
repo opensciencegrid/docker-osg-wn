@@ -24,12 +24,9 @@ jobs:
     strategy:
       fail-fast: False
       matrix:
-        dver: ['7', '8', '9']
+        dver: ['8', '9']
         repo: ['devel', 'testing', 'release']
-        series: ['3.6', '23']
-        exclude:
-          - dver: '7'
-            series: '23'
+        series: ['23']
     steps:
     - uses: actions/checkout@v3
 
@@ -45,13 +42,13 @@ jobs:
         tags=()
         for registry in hub.opensciencegrid.org docker.io; do
           tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
-          if [[ $EL_VER == '8' ]]; then
+          if [[ $EL_VER == '9' ]]; then
             tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
             if [[ $BASE_YUM_REPO == 'release' ]]; then
               tags+=( $registry/$docker_repo:$OSG_RELEASE )
-              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:latest )
+              [[ $OSG_RELEASE == '23' ]] && tags+=( $registry/$docker_repo:latest )
             else
-              [[ $OSG_RELEASE == '3.6' ]] && tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
+              [[ $OSG_RELEASE == '23' ]] && tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
             fi
           fi
           if [[ $BASE_YUM_REPO == 'release' ]]; then
@@ -68,7 +65,6 @@ jobs:
         case "$DVER" in
           9) image_base="quay.io/centos/centos:stream9";;
           8) image_base="docker.io/library/almalinux:8";;
-          7) image_base="docker.io/centos:centos7";;
           *) echo "Unknown distro version: $DVER"; exit 1;;
         esac
         echo "imagebase=${image_base}" >> $GITHUB_OUTPUT
