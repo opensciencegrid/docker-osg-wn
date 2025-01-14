@@ -4,14 +4,14 @@ ARG IMAGE_BASE=quay.io/centos/centos:stream8
 FROM $IMAGE_BASE
 
 ARG EL_VER=9
-ARG OSG_RELEASE=23
+ARG OSG_RELEASE=24
 ARG BASE_YUM_REPO=release
 ARG BUILDDATE
 
 LABEL name="OSG ${OSG_RELEASE} Worker Node Client on EL ${EL_VER} + ${BASE_YUM_REPO} repos"
 LABEL build-date=${BUILDDATE}
 
-RUN if [[ ${OSG_RELEASE} == "23" ]]; then \
+RUN if [[ ${OSG_RELEASE} == "23" || ${OSG_RELEASE} == "24" ]]; then \
         REL_URL_SNIPPET=23-main; \
     else \
         REL_URL_SNIPPET=${OSG_RELEASE}; \
