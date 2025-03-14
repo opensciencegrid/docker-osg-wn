@@ -26,7 +26,11 @@ jobs:
       matrix:
         dver: ['8', '9']
         repo: ['devel', 'testing', 'release']
-        series: ['23']
+        series: 
+          - name: '23'
+            organization: opensciencegrid
+          - name: '24'
+            organization: osg-htc
     steps:
     - uses: actions/checkout@v3
 
@@ -35,12 +39,17 @@ jobs:
       env:
         EL_VER: ${{ matrix.dver }}
         BASE_YUM_REPO: ${{ matrix.repo }}
-        OSG_RELEASE: ${{ matrix.series }}
+        OSG_RELEASE: ${{ matrix.series.name }}
         TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
+        ORGANIZATION: ${{ matrix.series.organization }}
       run: |
-        docker_repo=${GITHUB_REPOSITORY/opensciencegrid\/docker-/opensciencegrid/}
+        docker_repo=${GITHUB_REPOSITORY/opensciencegrid\/docker-/$ORGANIZATION/}
         tags=()
         for registry in hub.opensciencegrid.org docker.io; do
+          # osg-htc org doesn't exist in docker.io
+          if [[ "$registry" == "docker.io" && "$ORGANIZATION" == "osg-htc" ]]; then
+            continue
+          fi
           tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO-el$EL_VER )
           if [[ $EL_VER == '9' ]]; then
             tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
@@ -93,6 +102,6 @@ jobs:
           EL_VER=${{ matrix.dver }}
           IMAGE_BASE=${{ steps.generate-image-base.outputs.imagebase }}
           BASE_YUM_REPO=${{ matrix.repo }}
-          OSG_RELEASE=${{ matrix.series }}
+          OSG_RELEASE=${{ matrix.series.name }}
           BUILDDATE=${{ needs.make-date-tag.outputs.dtag }}
         tags: "${{ steps.generate-tag-list.outputs.taglist }}"

@@ -4,14 +4,12 @@ The images in this repository contain the suggested base worker node environment
 
 Available tags include:
 
-* `latest`: The latest version of the OSG worker node environment on the most recent supported OS.  As of June 2017, this is OSG 3.4 and RHEL7.
-* `3.4`: The OSG 3.4 release series on top of the most recent supported OS.  As of June 2017, this is RHEL7.
-* `3.4-el7`: The OSG 3.4 release series on top of a RHEL7 environment.
-* `3.4-el6`: The OSG 3.4 release series on top of a RHEL6 environment.
 
-As new release series (OSG 3.4, 3.5, ...) and base OS (RHEL8, RHEL9, ...) occur, the above tags will be updated appropriately.
-Each release series gets updates from the OSG on the second Tuesday of each month; additional image updates will occur whenever
-the underlying CentOS image is updated.
+* `latest`: (Deprecated) The latest version of the OSG worker node environment on the most recent supported OS.  At the time of deprecation, this was OSG 23 and EL9.
+* `24`: The OSG 24 release series on top of the most recent supported OS.  As of March 2025, this is EL9.
+* `24-el8`: The OSG 24 release series on top of an EL8 environment.
+* `23`: The OSG 23 release series on top of the most recent supported OS.  As of March 2025, this is EL9.
+* `23-el8`: The OSG 23 release series on top of an EL8 environment.
 
 ## Need help?
 
@@ -25,8 +23,8 @@ In addition to the production-quality tags, we also publish tags corresponding t
 are oriented toward developers trying to adjust their software to the updated environment.
 
 Available tags include:
-* `testing`: The testing repository on the most recent OS.
-* `devel`: The development repository (least refined but most recent updates of software) on the most recent OS.
-* `3.4-testing-el6`: The testing repository on top of a RHEL6 environment.
+* `testing`: (Deprecated) The testing repository on the most recent OS. At the time of deprecation, this was OSG 23 and EL9.
+* `devel`: (Deprecated) The development repository (least refined but most recent updates of software) on the most recent OS. At the time of deprecation, this was OSG 23 and EL9
+* `24-testing-el9`: The testing repository for OSG 24 on top of an EL9 environment.
 
-There are similar tags for `3.4-{testing,devel}-{el6,el7}`.
+There are similar tags for `{23,24}-{testing,devel}-{el8,el9}`.
