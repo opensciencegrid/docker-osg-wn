@@ -55,9 +55,9 @@ jobs:
             tags+=( $registry/$docker_repo:$OSG_RELEASE-$BASE_YUM_REPO )
             if [[ $BASE_YUM_REPO == 'release' ]]; then
               tags+=( $registry/$docker_repo:$OSG_RELEASE )
-              [[ $OSG_RELEASE == '24' ]] && tags+=( $registry/$docker_repo:latest )
+              [[ $OSG_RELEASE == '23' ]] && tags+=( $registry/$docker_repo:latest )
             else
-              [[ $OSG_RELEASE == '24' ]] && tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
+              [[ $OSG_RELEASE == '23' ]] && tags+=( $registry/$docker_repo:$BASE_YUM_REPO )
             fi
           fi
           if [[ $BASE_YUM_REPO == 'release' ]]; then
