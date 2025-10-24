@@ -11,11 +11,7 @@ ARG BUILDDATE
 LABEL name="OSG ${OSG_RELEASE} Worker Node Client on EL ${EL_VER} + ${BASE_YUM_REPO} repos"
 LABEL build-date=${BUILDDATE}
 
-RUN if [[ ${OSG_RELEASE} == "23" || ${OSG_RELEASE} == "24" ]]; then \
-        REL_URL_SNIPPET=23-main; \
-    else \
-        REL_URL_SNIPPET=${OSG_RELEASE}; \
-    fi && \
+RUN REL_URL_SNIPPET=${OSG_RELEASE}-main; \
     yum -y install https://repo.opensciencegrid.org/osg/${REL_URL_SNIPPET}/osg-${REL_URL_SNIPPET}-el${EL_VER}-release-latest.rpm \
                    epel-release \
                    yum-utils && \
