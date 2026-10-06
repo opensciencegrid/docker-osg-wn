@@ -1,10 +1,10 @@
 # Default to EL8 builds
-ARG IMAGE_BASE=quay.io/centos/centos:stream8
+ARG IMAGE_BASE=quay.io/centos/centos:stream9
 
 FROM $IMAGE_BASE
 
 ARG EL_VER=9
-ARG OSG_RELEASE=24
+ARG OSG_RELEASE=25
 ARG BASE_YUM_REPO=release
 ARG BUILDDATE
 
