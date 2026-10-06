@@ -27,10 +27,10 @@ jobs:
         dver: ['8', '9', '10']
         repo: ['devel', 'testing', 'release']
         organization: ['osg-htc']
-        series: ['24', '25']
+        series: ['25', '26']
         exclude:
-          - dver: '10'
-            series: '24'
+          - series: '26'
+            repo: 'release'
     steps:
     - uses: actions/checkout@v3
 
