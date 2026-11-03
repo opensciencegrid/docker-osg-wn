@@ -1,4 +1,4 @@
-# Default to EL8 builds
+# Default to EL9 builds
 ARG IMAGE_BASE=quay.io/centos/centos:stream9
 
 FROM $IMAGE_BASE
